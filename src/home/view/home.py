@@ -5,40 +5,7 @@ from src.database import Database
 from src.home.ui.sample_table import SampleTable
 from src.home.ui.navigation_drawer import NavigationDrawer
 
-class ExerciseReadDataRow(ft.DataRow):
-    def __init__(self,id:int,title:str,annotation:str,rounds:list):
 
-        self.title_row = ft.Ref[ft.DataCell]()
-        self.annotation_row = ft.Ref[ft.DataCell]()
-        self.rounds_row = ft.Ref[ft.DataCell]()
-
-
-        self.cells = [
-            ft.DataCell(ref=self.title_row,content=ft.Text(value=title)),
-            ft.DataCell(ref=self.annotation_row,content=ft.Text("Да" if annotation else "Нет")),
-            ft.DataCell(ref=self.rounds_row,content=ft.Text(f"{len(rounds)}")),
-        ]
-        super().__init__(
-            cells=self.cells,
-            on_long_press=lambda _: print(
-                self.title_row.current.content.value,
-                self.annotation_row.current.content.value,
-                self.rounds_row.current.content.value,              
-            )
-        )
-
-class ExerciseReadDataTable(ft.DataTable):
-    def __init__(self,rows:list[ExerciseReadDataRow] = [],visible:bool=True):
-        self.rows = rows
-        super().__init__(
-            visible=visible,
-            rows=self.rows,
-            columns=[
-                ft.DataColumn(ft.Text("Название")),
-                ft.DataColumn(ft.Text("Аннотация")),
-                ft.DataColumn(ft.Text("Походы"), numeric=True),
-            ],
-        )
 class HomeView(ft.View):
     def __init__(self,page:ft.Page):
         super().__init__(
@@ -78,7 +45,7 @@ class HomeView(ft.View):
 
     def view_sample(self,need_update:bool = False):
         self.lv.controls.clear()
-        print(f"{Database(self.page).sample=}")
+        # print(f"{Database(self.page).sample=}")
         if not Database(page=self.page).sample:
             self.lv.controls += [
                 ft.Text("Чтобы начать добавьте выборку."),
@@ -99,7 +66,36 @@ class HomeView(ft.View):
                         controls=[
                             ft.Column(
                                 controls=[
-                                    SampleTable(Database(self.page).sample)
+                                    ft.DataTable(
+                                        columns=[
+                                            ft.DataColumn(ft.Text("First name")),
+                                            ft.DataColumn(ft.Text("Last name")),
+                                            ft.DataColumn(ft.Text("Age"), numeric=True),
+                                        ],
+                                        rows=[
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("John")),
+                                                    ft.DataCell(ft.Text("Smith")),
+                                                    ft.DataCell(ft.Text("43")),
+                                                ],
+                                            ),
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("Jack")),
+                                                    ft.DataCell(ft.Text("Brown")),
+                                                    ft.DataCell(ft.Text("19")),
+                                                ],
+                                            ),
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("Alice")),
+                                                    ft.DataCell(ft.Text("Wong")),
+                                                    ft.DataCell(ft.Text("25")),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
                                 ]
                             )   
                         ]
@@ -129,7 +125,163 @@ class HomeView(ft.View):
                             )
                         ]
                     )
+                ),
+                                    ft.ExpansionTile(
+                        title=ft.Text("Выборка данных"),
+                        subtitle=ft.Text("Информация представлена в таблице",color="grey"),
+                        leading=ft.Icon("assignment"),
+                        affinity=ft.TileAffinity.PLATFORM,
+                        controls=[
+                            ft.Column(
+                                controls=[
+                                    ft.DataTable(
+                                        columns=[
+                                            ft.DataColumn(ft.Text("First name")),
+                                            ft.DataColumn(ft.Text("Last name")),
+                                            ft.DataColumn(ft.Text("Age"), numeric=True),
+                                        ],
+                                        rows=[
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("John")),
+                                                    ft.DataCell(ft.Text("Smith")),
+                                                    ft.DataCell(ft.Text("43")),
+                                                ],
+                                            ),
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("Jack")),
+                                                    ft.DataCell(ft.Text("Brown")),
+                                                    ft.DataCell(ft.Text("19")),
+                                                ],
+                                            ),
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("Alice")),
+                                                    ft.DataCell(ft.Text("Wong")),
+                                                    ft.DataCell(ft.Text("25")),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+                                ]
+                            )   
+                        ]
+                    ),
+ft.DataTable(
+                                        columns=[
+                                            ft.DataColumn(ft.Text("First name")),
+                                            ft.DataColumn(ft.Text("Last name")),
+                                            ft.DataColumn(ft.Text("Age"), numeric=True),
+                                        ],
+                                        rows=[
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("John")),
+                                                    ft.DataCell(ft.Text("Smith")),
+                                                    ft.DataCell(ft.Text("43")),
+                                                ],
+                                            ),
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("Jack")),
+                                                    ft.DataCell(ft.Text("Brown")),
+                                                    ft.DataCell(ft.Text("19")),
+                                                ],
+                                            ),
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("Alice")),
+                                                    ft.DataCell(ft.Text("Wong")),
+                                                    ft.DataCell(ft.Text("25")),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+ft.Tabs(
+        selected_index=1,
+        animation_duration=300,
+        tabs=[
+            ft.Tab(
+                text="Tab 1",
+                content=ft.Container(
+                    content=ft.DataTable(
+                                        columns=[
+                                            ft.DataColumn(ft.Text("First name")),
+                                            ft.DataColumn(ft.Text("Last name")),
+                                            ft.DataColumn(ft.Text("Age"), numeric=True),
+                                        ],
+                                        rows=[
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("John")),
+                                                    ft.DataCell(ft.Text("Smith")),
+                                                    ft.DataCell(ft.Text("43")),
+                                                ],
+                                            ),
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("Jack")),
+                                                    ft.DataCell(ft.Text("Brown")),
+                                                    ft.DataCell(ft.Text("19")),
+                                                ],
+                                            ),
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("Alice")),
+                                                    ft.DataCell(ft.Text("Wong")),
+                                                    ft.DataCell(ft.Text("25")),
+                                                ],
+                                            ),
+                                        ]
+                    ),
+                                       alignment=ft.alignment.center
+                ),
+            ),
+            ft.Tab(
+                tab_content=ft.Icon(ft.icons.SEARCH),
+                content=ft.Column(
+
+                    [ft.DataTable(
+                                        columns=[
+                                            ft.DataColumn(ft.Text("First name")),
+                                            ft.DataColumn(ft.Text("Last name")),
+                                            ft.DataColumn(ft.Text("Age"), numeric=True),
+                                        ],
+                                        rows=[
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("John")),
+                                                    ft.DataCell(ft.Text("Smith")),
+                                                    ft.DataCell(ft.Text("43")),
+                                                ],
+                                            ),
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("Jack")),
+                                                    ft.DataCell(ft.Text("Brown")),
+                                                    ft.DataCell(ft.Text("19")),
+                                                ],
+                                            ),
+                                            ft.DataRow(
+                                                cells=[
+                                                    ft.DataCell(ft.Text("Alice")),
+                                                    ft.DataCell(ft.Text("Wong")),
+                                                    ft.DataCell(ft.Text("25")),
+                                                ],
+                                            ),
+                                        ]
+                    )]
                 )
+            ),
+            ft.Tab(
+                text="Tab 3",
+                icon=ft.icons.SETTINGS,
+                content=ft.Text("This is Tab 3"),
+            ),
+        ],
+        expand=1,
+    )
             ]
         if need_update:
             self.lv.update()
