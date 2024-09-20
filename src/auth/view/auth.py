@@ -1,12 +1,14 @@
 import flet as ft
 
 from src.utils import on_change_obj
+from src.database import Database
+
 
 class AuthView(ft.View):
     def __init__(self,page:ft.Page):
         super().__init__(
-            padding=ft.Padding(0,100,0,0),
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,         
+            horizontal_alignment=ft.MainAxisAlignment.CENTER,         
+            vertical_alignment=ft.MainAxisAlignment.CENTER,
         )
 
         self.page = page
@@ -23,7 +25,6 @@ class AuthView(ft.View):
                 content=ft.Container(
                     padding=15,
                     content=ft.Column(
-                        width=.3*self.page.width,
                         alignment=ft.MainAxisAlignment.CENTER,
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                         controls=[
@@ -55,7 +56,11 @@ class AuthView(ft.View):
                     )
                 )    
             )
+            
         ]
+        database = Database(self.page) 
+        if database.log_in(*database.get_username_password_in_client_storage()):
+            self.page.go("/home")
     def log_in(self,e:ft.ControlEvent):
         if not self.user_name_tf.current.value: 
             self.user_name_tf.current.error_text = "Это поле обязательно"
@@ -65,4 +70,10 @@ class AuthView(ft.View):
             self.user_password_tf.current.update()
             
         if self.user_password_tf.current.value and self.user_name_tf.current.value:
-            ...
+            database = Database(self.page) 
+            if database.log_in(self.user_name_tf.current.value,self.user_password_tf.current.value):
+                database.set_username_password_in_client_storage(self.user_name_tf.current.value,self.user_password_tf.current.value)
+                self.page.go("/home")
+            else:
+                self.user_name_tf.current.error_text = "Неверный логин или пароль"
+                self.user_password_tf.current.update()
