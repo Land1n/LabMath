@@ -36,4 +36,3 @@ class Router:
         if not [view for view in self.page.views if view.route == route.route]:
             self.page.views.append(self.routes[route.route](self.page))
         self.page.update()
-        print(self.page.views)

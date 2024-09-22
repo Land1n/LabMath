@@ -30,7 +30,7 @@ class HomeView(ft.View):
             ]
         )
 
-        self.drawer = NavigationDrawer()
+        self.drawer = NavigationDrawer(self.page)
 
         self.lv = ft.ListView(
             expand=1,
@@ -45,7 +45,6 @@ class HomeView(ft.View):
 
     def view_sample(self,need_update:bool = False):
         self.lv.controls.clear()
-        # print(f"{Database(self.page).sample=}")
         if not Database(page=self.page).sample:
             self.lv.controls += [
                 ft.Text("Чтобы начать добавьте выборку."),
@@ -64,7 +63,12 @@ class HomeView(ft.View):
                         leading=ft.Icon("assignment"),
                         affinity=ft.TileAffinity.PLATFORM,
                         controls=[
-                            SampleTable(Database(self.page).sample)
+                            ft.Row(
+                                scroll=ft.ScrollMode.ALWAYS,
+                                controls=[
+                                    SampleTable(Database(self.page).sample)
+                                ]
+                            )
                         ]
                     )
                 ),

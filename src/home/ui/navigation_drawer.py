@@ -3,8 +3,11 @@ import flet as ft
 from src.database import Database
 from src.utils import view_pop
 
+from src.utils import ConsolePanel
+
 class NavigationDrawer(ft.NavigationDrawer):
-    def __init__(self):
+    def __init__(self,page:ft.Page):
+        self.page = page
         super().__init__(
             on_change=self.on_change_navigation,
             controls=[
@@ -33,7 +36,12 @@ class NavigationDrawer(ft.NavigationDrawer):
         self.open = False
         self.update()
         view_pop(e)
-        print('exit_account')
+
     def on_change_navigation(self, e:ft.ControlEvent = None):
         if e.data == "2":
             self.exit_account(e)
+        if e.data == "3":
+            self.page.close(self)
+            self.update()
+            self.page.open(ConsolePanel(self.page))
+            self.page.update()

@@ -2,25 +2,25 @@ import flet as ft
 
 from dataclasses import dataclass
 
-from src.utils import on_change_obj
+from src.utils import on_change_obj, ClassicalTextButton
 
 
 @dataclass
-class DataMiniColumnCard:
-    number:int
+class DataSampleCard:
     symbol:str
     name:str
     device_error:str
+    values:list[int]
 
-class MiniColumnCard(ft.Card):
+class SampleCard(ft.Card):
 
     class MyTextField(ft.TextField):
-        def __init__(self,label:str,input_filter:ft.InputFilter=None,max_length:int=1):
+        def __init__(self,label:str,input_filter:ft.InputFilter=None,value='',max_length:int=None):
             super().__init__(
+                value=value,
                 label=label,
                 input_filter=input_filter,
                 max_length=max_length,
-
                 col={"md": 4,"xs": 4},
                 hint_text="(Обязательно)",
                 label_style=ft.TextStyle(size=11),
@@ -37,7 +37,7 @@ class MiniColumnCard(ft.Card):
         def __init__(self):
             super().__init__(regex_string=r"[a-zA-ZА-Яа-я]")
 
-    def __init__(self,dd_row:int,number:int=0,data:DataMiniColumnCard={}):
+    def __init__(self,number:int,data:DataSampleCard={}):
         super().__init__()
 
         self.values = []
@@ -60,52 +60,42 @@ class MiniColumnCard(ft.Card):
             input_filter=ft.NumbersOnlyInputFilter(),
         )
 
-        self.column_with_row = ft.ExpansionTile(
-            title=ft.Text("Значение строк"),
-            subtitle=ft.Text("Этот раздел обязателен",color="grey"),
+
+        self.column_with_row = ft.Column(
+            expand=1,
+            tight=1,
+        )
+
+        self.expansion_tile = ft.ExpansionTile(
+            title=ft.Text("Данные выборки"),
             leading=ft.Icon("analytics"),
             affinity=ft.TileAffinity.PLATFORM,
-            controls=[
-                ft.Column(
-                    spacing=10,
-                    controls=[
-                        ft.TextField(
-                            label=f"Cтрока: {i}",
-                            on_change=on_change_obj,
-                            input_filter=ft.NumbersOnlyInputFilter()
-                        ) for i in range(1,dd_row+1)
-                    ]
-                )
-            ]
+            
+            controls=[self.column_with_row,ClassicalTextButton(text='Добавить данные',icon="add",on_click=self.add_ft)]
         )
 
         if data:
-            self.data = DataMiniColumnCard(**data)
-            
-            self.number =  self.data.number
+            self.data = DataSampleCard(**data)
             self.symbol.value =  self.data.symbol
             self.name.value =  self.data.name
             self.device_error.value =  self.data.device_error
-
+            self.values = self.data.values
+            for value in self.values:
+                self.add_ft(value=str(value),need_update=False)
 
         self.content=ft.Container(
                 padding=10,
                 content=ft.Column(
                     controls=[
                         ft.Row(
-                            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
                             controls=[
-                                ft.Row(
-                                    controls=[
-                                        ft.Icon("event_note"),
-                                        ft.Text(
-                                            value=f"Столбец: {self.number}",
-                                            size=15,
-                                            weight=ft.FontWeight.BOLD
-                                        )
-                                    ]
-                                ),
-                            ],
+                                ft.Icon("insert_chart_outlined"),
+                                ft.Text(
+                                    value=f"Выборка: {self.number}",
+                                    size=15,
+                                    weight=ft.FontWeight.BOLD
+                                )
+                            ]
                         ),
                         ft.ResponsiveRow(
                             controls=[
@@ -114,10 +104,15 @@ class MiniColumnCard(ft.Card):
                                 self.device_error
                             ]
                         ),
-                        self.column_with_row
+                        self.expansion_tile
                     ]
                 )
             )
+
+    def add_ft(self,e:ft.ControlEvent=None,value:str="",need_update:bool = True):
+        self.column_with_row.controls += [self.MyTextField(f"Строка: {len(self.column_with_row.controls)+1}",value=value)]
+        if need_update:
+            self.column_with_row.update()
 
     @property
     def value(self):
@@ -126,7 +121,7 @@ class MiniColumnCard(ft.Card):
                 "symbol":self.symbol.value,
                 "name":self.name.value,
                 "device_error":int(self.device_error.value),
-                "values":[int(tf.value) for tf in self.column_with_row.controls[0].controls],
+                "values":[int(tf.value) for tf in self.column_with_row.controls],
             }
         else:
             return False
