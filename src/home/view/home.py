@@ -83,7 +83,7 @@ class HomeView(ft.View):
                                 controls=[
                                     ft.ListTile(
                                         title=ft.Text("Прямые измерения"),
-                                        subtitle=ft.Text("В этом разделе прямые измерения показаны по каждой выборке ( по каждому столбцу )"),
+                                        subtitle=ft.Text("В этом разделе прямые измерения показаны по каждому элементу выборки"),
                                         on_click=lambda _: self.page.go("/direct_measurements")
                                     ),
                                     ft.Divider(),

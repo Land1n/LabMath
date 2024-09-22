@@ -3,7 +3,7 @@ from flet_core import colors
 
 from repath import match
 
-from src.utils import on_change_obj,view_pop
+from src.utils import on_change_obj,view_pop, ImportantInformationCard
 from src.home.ui.sample_card import SampleCard
 from src.database import Database
 
@@ -53,7 +53,11 @@ class SampleView(ft.View):
                     content=ft.Row(
                         spacing=5,
                         controls=[
-                            ft.IconButton(icon='addchart',on_click=self.add_sample),
+                            ft.IconButton(
+                                icon='addchart',
+                                on_click=self.add_sample,
+                                tooltip="Add data selection element",
+                            ),
                             ft.FilledButton(
                                 text="Добавить выборку",
                                 icon="add",
@@ -61,7 +65,8 @@ class SampleView(ft.View):
                                 style=ft.ButtonStyle(
                                     color="white",
                                     bgcolor=colors.PRIMARY,
-                                )
+                                ),
+                                tooltip="Add data sampling",
                             )
                         ]
                     )
@@ -74,14 +79,7 @@ class SampleView(ft.View):
         )
 
         self.controls=[
-            ft.Card(
-                visible=self.type_settings.get(self.type,None)["info"],
-                content=ft.ListTile(
-                    leading=ft.Icon("info"),
-                    title=ft.Text("Важная информация"),
-                    subtitle=ft.Text('Важно заполнять поля правильно эти данные будут использоваться в косвенных измерениях'),
-                )
-            ),
+            ImportantInformationCard('Важно заполнять поля правильно эти данные будут использоваться в косвенных измерениях',visible=self.type_settings.get(self.type,None)["info"]),
             ft.Divider(),
             self.column_with_tf,
     

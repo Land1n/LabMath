@@ -30,12 +30,55 @@ def view_pop(e:ft.ViewPopEvent,*view):
     e.page.go(top_view.route)
     return top_view
 
+class ImportantInformationCard(ft.Card):
+    def __init__(self, text:str, visible:bool=True):
+        super().__init__(
+            visible=visible,
+            content=ft.ListTile(
+                leading=ft.Icon("info"),
+                title=ft.Text("Важная информация"),
+                subtitle=ft.Text(text),
+            )
+        )
+
+
 class FrameCard(ft.Card):
-    def __init__(self,obj):
+    def __init__(self,control:ft.Control = None, title:ft.Text=None, leading:ft.Icon=None, actions:list[ft.Control]=None):
+        
+        self.col = ft.Column(tight=True)
+        self.controls = self.col.controls
+
+        if control != None:
+            self.controls.append(control)
+
+        row = ft.Row(
+            alignment=ft.MainAxisAlignment.SPACE_BETWEEN,
+            vertical_alignment=ft.CrossAxisAlignment.CENTER,
+            controls=[
+                ft.Row(),
+                ft.Row(tight=True)
+            ]
+        )
+        if leading != None:
+            row.controls[0].controls += [
+                leading
+            ]
+
+        if title != None:
+            row.controls[0].controls += [
+                title
+            ]
+
+        if actions != None:
+            row.controls[1].controls = actions
+
+        if any([leading,title,actions]):
+            self.controls.insert(0,row)
+
         super().__init__(
             content=ft.Container(
                 padding=10,
-                content=obj
+                content=self.col
             )
         )
 

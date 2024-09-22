@@ -1,16 +1,9 @@
 import flet as ft
 
-from dataclasses import dataclass
-
 from src.utils import on_change_obj, ClassicalTextButton
 
+from src.shemes import DataSample
 
-@dataclass
-class DataSampleCard:
-    symbol:str
-    name:str
-    device_error:str
-    values:list[int]
 
 class SampleCard(ft.Card):
 
@@ -37,7 +30,7 @@ class SampleCard(ft.Card):
         def __init__(self):
             super().__init__(regex_string=r"[a-zA-ZА-Яа-я]")
 
-    def __init__(self,number:int,data:DataSampleCard={}):
+    def __init__(self,number:int,data:DataSample={}):
         super().__init__()
 
         self.values = []
@@ -75,7 +68,7 @@ class SampleCard(ft.Card):
         )
 
         if data:
-            self.data = DataSampleCard(**data)
+            self.data = DataSample(**data)
             self.symbol.value =  self.data.symbol
             self.name.value =  self.data.name
             self.device_error.value =  self.data.device_error

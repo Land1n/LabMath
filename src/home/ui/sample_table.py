@@ -33,7 +33,6 @@ class SampleTable(ft.DataTable):
         super().__init__(
             columns=columns,
             rows=rows,
-            width=1000,
             vertical_lines=ft.BorderSide(0.5, "black"),            
         )
         
